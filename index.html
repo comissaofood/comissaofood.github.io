@@ -2,20 +2,294 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Comissão Food Service</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Portal de Comissões Food Service</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f3f4f6;
+    margin:0;
+}
+
+.header{
+    background:white;
+    padding:20px;
+}
+
+.container{
+    padding:20px;
+}
+
+.card-area{
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+}
+
+.card{
+    flex:1;
+    background:#071738;
+    color:white;
+    padding:20px;
+    border-radius:10px;
+}
+
+.valor{
+    color:#58a6ff;
+    font-size:32px;
+    font-weight:bold;
+}
+
+.filtros{
+    margin:20px 0;
+    display:flex;
+    gap:10px;
+}
+
+button{
+    background:#198754;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+th{
+    background:#f1f1f1;
+    text-align:left;
+    padding:12px;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+}
+
+.tabs{
+    margin-top:20px;
+}
+
+.tab{
+    display:inline-block;
+    background:white;
+    padding:10px 20px;
+    border:1px solid #ddd;
+    cursor:pointer;
+}
+
+.hidden{
+    display:none;
+}
+
+.login{
+    max-width:400px;
+    margin:100px auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+}
+
+input,select{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+}
+
+</style>
 </head>
 
-<body style="font-family:Arial;text-align:center;background:#f4f4f4;padding:40px;">
+<body>
 
-<div style="background:white;padding:40px;border-radius:15px;max-width:800px;margin:auto;">
+<div id="login" class="login">
 
-<img src="ng
+<h2>Comissão Food Service</h2>
 
-<h1>Comissão Food Service</h1>
+<label>Código do Fornecedor</label>
 
-<p>Bem-vindo ao portal de acompanhamento de comissões.</p>
+<input id="fornecedor">
+
+<button onclick="entrar()">Entrar</button>
 
 </div>
+
+<div id="portal" style="display:none">
+
+<div class="header">
+
+<h1>Portal de Comissões</h1>
+
+<p id="usuario"></p>
+
+</div>
+
+<div class="container">
+
+<div class="filtros">
+
+<select id="mes">
+<option value="">Todos os Meses</option>
+<option value="1">Janeiro</option>
+<option value="2">Fevereiro</option>
+<option value="3">Março</option>
+<option value="4">Abril</option>
+<option value="5">Maio</option>
+<option value="6">Junho</option>
+<option value="7">Julho</option>
+<option value="8">Agosto</option>
+<option value="9">Setembro</option>
+<option value="10">Outubro</option>
+<option value="11">Novembro</option>
+<option value="12">Dezembro</option>
+</select>
+
+<button onclick="filtrar()">Filtrar</button>
+
+</div>
+
+<div class="card-area">
+
+<div class="card">
+<div>Comissão</div>
+<div id="comissaoTotal" class="valor">R$ 0,00</div>
+</div>
+
+<div class="card">
+<div>Pedidos</div>
+<div id="qtdePedidos" class="valor">0</div>
+</div>
+
+<div class="card">
+<div>Clientes</div>
+<div id="qtdeClientes" class="valor">0</div>
+</div>
+
+<div class="card">
+<div>CNPJs</div>
+<div id="qtdeCnpj" class="valor">0</div>
+</div>
+
+</div>
+
+<div class="tabs">
+
+<div class="tab" onclick="mostrarResumo()">Resumo</div>
+
+<div class="tab" onclick="mostrarDetalhes()">Detalhes</div>
+
+</div>
+
+<div id="resumo">
+
+<h2>Total a Receber</h2>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Descrição CD</th>
+<th>Pedido</th>
+<th>CNPJ</th>
+<th>Comissão</th>
+</tr>
+
+</thead>
+
+<tbody id="tbResumo"></tbody>
+
+</table>
+
+</div>
+
+<div id="detalhes" class="hidden">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Empresa</th>
+<th>Pedido</th>
+<th>Cliente</th>
+<th>Material</th>
+<th>Descrição Material</th>
+<th>Faturamento</th>
+<th>Comissão</th>
+<th>CD</th>
+<th>Descrição CD</th>
+<th>Vendedor</th>
+</tr>
+
+</thead>
+
+<tbody id="tbDetalhes"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let dados=[];
+
+function entrar(){
+
+let fornecedor=document
+.getElementById("fornecedor")
+.value;
+
+document.getElementById("login")
+.style.display="none";
+
+document.getElementById("portal")
+.style.display="block";
+
+document.getElementById("usuario")
+.innerHTML="Fornecedor: "+fornecedor;
+
+}
+
+function mostrarResumo(){
+document.getElementById("resumo")
+.classList.remove("hidden");
+
+document.getElementById("detalhes")
+.classList.add("hidden");
+}
+
+function mostrarDetalhes(){
+document.getElementById("detalhes")
+.classList.remove("hidden");
+
+document.getElementById("resumo")
+.classList.add("hidden");
+}
+
+function filtrar(){
+
+let mes=document
+.getElementById("mes")
+.value;
+
+console.log("Filtrar mês",mes);
+
+}
+
+</script>
 
 </body>
 </html>
